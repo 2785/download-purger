@@ -16,32 +16,39 @@ func TestParseTime(t *testing.T) {
 		wantErr bool
 	}{
 		{
+			name: "Success Case: minute",
+			args: args{
+				s: "5min",
+			},
+			want: time.Duration(5 * time.Minute),
+		},
+		{
 			name: "Success Case: day",
 			args: args{
-				s: "1d",
+				s: "1day",
 			},
-			want: time.Duration(time.Duration(24) * time.Hour),
+			want: time.Duration(24 * time.Hour),
 		},
 		{
 			name: "Success Case: week",
 			args: args{
-				s: "2w",
+				s: "2week",
 			},
-			want: time.Duration(time.Duration(2*24*7) * time.Hour),
+			want: time.Duration(2 * 24 * 7 * time.Hour),
 		},
 		{
 			name: "Success Case: day",
 			args: args{
-				s: "3m",
+				s: "3month",
 			},
-			want: time.Duration(time.Duration(3*30*24) * time.Hour),
+			want: time.Duration(3 * 30 * 24 * time.Hour),
 		},
 		{
 			name: "Success Case: day",
 			args: args{
-				s: "4y",
+				s: "4year",
 			},
-			want: time.Duration(time.Duration(4*365*24) * time.Hour),
+			want: time.Duration(4 * 365 * 24 * time.Hour),
 		},
 		{
 			name: "Failure Case: garbage input",

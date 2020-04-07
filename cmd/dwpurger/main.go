@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"os/user"
 
 	"github.com/2785/download-purger/internal/durationutil"
+	"github.com/2785/download-purger/internal/fsutil"
 )
 
 func main() {
@@ -14,9 +14,7 @@ func main() {
 	_ = ignoreWarning
 	duration := flag.String("duration", "2w", "string representing duration of downloads to clear, e.g.: ")
 
-	usr, _ := user.Current()
-
-	folder := flag.String("dir", fmt.Sprintf("%s/Downloads", usr.HomeDir), "path to the folder you wish to purge")
+	folder := flag.String("dir", fmt.Sprintf("~/Downloads"), "path to the folder you wish to purge")
 	flag.Parse()
 	dur, err := durationutil.ParseTime(*duration)
 	_ = dur
@@ -25,7 +23,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("directory: %s\n", *folder)
+	r, err := fsutil.ParsePath(*folder)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err.Error())
+	}
+
+	fmt.Printf("directory: %s\n", r)
 
 	// reader := bufio.NewReader(os.Stdin)
 

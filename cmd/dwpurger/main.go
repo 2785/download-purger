@@ -95,20 +95,28 @@ func main() {
 		return m
 	}()
 
-	logFile, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModeAppend)
+	logDir := filepath.Dir(outputPath)
 
-	if err != nil {
-		fmt.Printf("cannot access log file\n")
-		os.Exit(1)
+	if _, err := os.Stat(logDir); os.IsNotExist(err) {
+		os.MkdirAll(logDir, os.ModePerm)
 	}
 
+	logFile, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
+
+	if err != nil {
+		fmt.Printf("cannot access log file: %s\n", err.Error())
+		os.Exit(1)
+	}
+	_ = logFile
+
 	for k, v := range deletionOutcome {
-		logFile.Write([]byte(fmt.Sprintf("File %s: %s [%s]\n", k, func() string {
+		logFile.WriteString(fmt.Sprintf("File %s: %s [%s]\n", k, func() string {
 			if v.ok {
 				return "deleted"
 			} else {
-				return fmt.Sprintf("failed to delete: %s", v.err.Error())
+				return fmt.Sprintf("failed to delete: %s\n", v.err.Error())
 			}
-		}(), time.Now())))
+		}(), time.Now()))
 	}
+
 }

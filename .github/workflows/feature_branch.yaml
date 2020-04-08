@@ -4,7 +4,7 @@ on: push
 
 jobs:
   build:
-    name: Build
+    name: Test and Build
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.13
@@ -26,3 +26,6 @@ jobs:
 
       - name: Test
         run: go test ./...
+
+      - name: Build Dwpurger
+        run: go build -v cmd/dwpurger/main.go
